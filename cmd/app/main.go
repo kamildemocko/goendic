@@ -1,8 +1,8 @@
 package main
 
 import (
+	"goendic/internal/database"
 	"log"
-	"test/internal/database"
 )
 
 const downloadUrl = `https://en-word.net/static/english-wordnet-2024.xml.gz`
