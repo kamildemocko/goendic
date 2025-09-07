@@ -1,3 +1,3 @@
-Go English Dictionary
+# Go English Dictionary
 
-# TODO
+simple English cli dictionary, that uses `en-word.net` database of english words
