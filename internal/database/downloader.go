@@ -18,10 +18,10 @@ type Database struct {
 	extractedFileName string
 }
 
-func NewDatabase(url, fileName string) Database {
+func NewDatabase(url string) Database {
 	return Database{
 		url:          url,
-		tempFilePath: fileName,
+		tempFilePath: "db.gz",
 	}
 }
 

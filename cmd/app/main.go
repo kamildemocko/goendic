@@ -6,10 +6,9 @@ import (
 )
 
 const downloadUrl = `https://en-word.net/static/english-wordnet-2024.xml.gz`
-const downloadFilename = "db.gz"
 
 func main() {
-	db := database.NewDatabase(downloadUrl, downloadFilename)
+	db := database.NewDatabase(downloadUrl)
 	file, err := db.Get()
 	if err != nil {
 		panic(err)
@@ -17,4 +16,6 @@ func main() {
 	defer db.Close()
 
 	log.Println(file)
+
+	database.ParseXML(file)
 }
