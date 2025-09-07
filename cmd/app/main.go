@@ -4,7 +4,6 @@ import (
 	"goendic/internal/data"
 	"goendic/internal/repository"
 	"goendic/internal/repository/sqlite"
-	"log"
 )
 
 const downloadUrl = `https://en-word.net/static/english-wordnet-2024.xml.gz`
@@ -26,8 +25,6 @@ func main() {
 		panic(err)
 	}
 	defer loader.Close()
-
-	log.Println(file)
 
 	data, err := data.ParseXML(file)
 	if err != nil {

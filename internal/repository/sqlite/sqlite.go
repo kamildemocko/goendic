@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"goendic/internal/data/model"
+	"log"
 	"os"
 	"path/filepath"
 	"time"
@@ -31,6 +32,8 @@ func (sr *SqliteRepository) CreateTable() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
+	log.Println("database init")
+
 	query := `
 	CREATE VIRTUAL TABLE IF NOT EXISTS dictionary USING fts5(
 		word,
@@ -47,23 +50,50 @@ func (sr *SqliteRepository) CreateTable() error {
 	return nil
 }
 
-func (sr *SqliteRepository) UpdateData([]model.UpdateEntry) error {
+func (sr *SqliteRepository) UpdateData(entries []model.UpdateEntry) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	query := `
-	INSERT INTO dictionary (word, pos, definition, examples)
-	VALUES (
-		'bomb',
-		'noun',
-		'an explosive device fused to explode under specific conditions',
-		'The army diffused a bomb.'
-	);`
+	log.Println("updating database")
 
-	_, err := sr.DB.ExecContext(ctx, query)
+	tx, err := sr.DB.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
+	defer tx.Rollback()
+
+	query_truncate := `
+	DELETE FROM dictionary`
+
+	_, err = tx.ExecContext(ctx, query_truncate)
+	if err != nil {
+		return err
+	}
+
+	query := `
+	INSERT INTO dictionary (word, pos, definition, examples)
+	VALUES (?, ?, ?, ?);`
+
+	stmt, err := tx.PrepareContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	for _, entry := range entries {
+		_, err = stmt.ExecContext(
+			ctx, entry.Word, entry.Pos, entry.Definition, entry.Examples,
+		)
+		if err != nil {
+			return err
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
+	}
+
+	log.Println("success")
 
 	return nil
 }
