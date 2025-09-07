@@ -3,11 +3,28 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"goendic/internal/data/model"
+	"os"
+	"path/filepath"
 	"time"
 )
 
 type SqliteRepository struct {
 	DB *sql.DB
+}
+
+// creates DB file and returns DSN
+func CreateDBFileIfNotExists() (string, error) {
+	dbDir := "data"
+	if err := os.MkdirAll(dbDir, 0755); err != nil {
+		return "", err
+	}
+
+	path := filepath.Join(dbDir, "dictionary.db")
+	dsn := fmt.Sprintf("file:%s?mode=rwc", path)
+
+	return dsn, nil
 }
 
 func (sr *SqliteRepository) CreateTable() error {
@@ -30,7 +47,7 @@ func (sr *SqliteRepository) CreateTable() error {
 	return nil
 }
 
-func (sr *SqliteRepository) UpdateData() error {
+func (sr *SqliteRepository) UpdateData([]model.UpdateEntry) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 

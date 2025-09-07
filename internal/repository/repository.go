@@ -2,14 +2,17 @@ package repository
 
 import (
 	"database/sql"
+	"goendic/internal/data/model"
 	"goendic/internal/repository/sqlite"
 	"log"
 	"time"
+
+	_ "modernc.org/sqlite"
 )
 
 type Repository interface {
 	CreateTable() error
-	UpdateData() error
+	UpdateData([]model.UpdateEntry) error
 	FindWordExact(val string) error
 	FindWord(val string) error
 }
