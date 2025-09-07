@@ -18,6 +18,7 @@ type SqliteRepository struct {
 // creates DB file and returns DSN
 func CreateDBFileIfNotExists() (string, error) {
 	dbDir := "data"
+
 	if err := os.MkdirAll(dbDir, 0755); err != nil {
 		return "", err
 	}
@@ -48,6 +49,35 @@ func (sr *SqliteRepository) CreateTable() error {
 	}
 
 	return nil
+}
+
+func (sr *SqliteRepository) HasData() (bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	queryTable := `
+	SELECT name FROM sqlite_master
+	WHERE type='table' AND name='dictionary'`
+
+	var tableName string
+	err := sr.DB.QueryRowContext(ctx, queryTable).Scan(&tableName)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+
+	queryCount := `
+	SELECT COUNT(*) FROM dictionary LIMIT 1`
+
+	var count int
+	err = sr.DB.QueryRowContext(ctx, queryCount).Scan(&count)
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
 }
 
 func (sr *SqliteRepository) UpdateData(entries []model.UpdateEntry) error {

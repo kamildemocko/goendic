@@ -12,6 +12,7 @@ import (
 
 type Repository interface {
 	CreateTable() error
+	HasData() (bool, error)
 	UpdateData([]model.UpdateEntry) error
 	FindWordExact(val string) error
 	FindWord(val string) error

@@ -8,28 +8,50 @@ import (
 
 const downloadUrl = `https://en-word.net/static/english-wordnet-2024.xml.gz`
 
-func main() {
+func prepareData() error {
 	dsn, err := sqlite.CreateDBFileIfNotExists()
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	repo, err := repository.InitSqliteDB(dsn)
 	if err != nil {
-		panic(err)
+		return err
+	}
+
+	dbExists, err := repo.HasData()
+	if err != nil {
+		return err
+	}
+	if dbExists {
+		return nil
 	}
 
 	loader := data.NewDataLoader(downloadUrl)
 	file, err := loader.Get()
 	if err != nil {
-		panic(err)
+		return err
 	}
 	defer loader.Close()
 
 	data, err := data.ParseXML(file)
 	if err != nil {
+		return err
+	}
+
+	err = repo.UpdateData(data)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func main() {
+	err := prepareData()
+	if err != nil {
 		panic(err)
 	}
 
-	_ = repo.UpdateData(data)
+	// job
 }
