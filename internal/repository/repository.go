@@ -14,8 +14,7 @@ type Repository interface {
 	CreateTable() error
 	HasData() (bool, error)
 	UpdateData([]model.UpdateEntry) error
-	FindWordExact(val string) ([]model.UpdateEntry, error)
-	FindWord(val string) ([]model.UpdateEntry, error)
+	FindWord(val string, exact bool) ([]model.UpdateEntry, error)
 }
 
 func NewSqliteDB(db *sql.DB) Repository {

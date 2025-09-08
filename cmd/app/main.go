@@ -1,13 +1,18 @@
 package main
 
 import (
+	"flag"
 	"goendic/internal/data"
+	"goendic/internal/printer"
 	"goendic/internal/repository"
 	"goendic/internal/repository/sqlite"
 	"log"
+	"strings"
 )
 
 const downloadUrl = `https://en-word.net/static/english-wordnet-2024.xml.gz`
+
+var exactMatch bool
 
 type App struct {
 	repo repository.Repository
@@ -52,7 +57,24 @@ func prepareData() (repository.Repository, error) {
 	return repo, nil
 }
 
+func init() {
+	flag.BoolVar(&exactMatch, "e", false, "use exact matching")
+}
+
 func main() {
+	flag.Parse()
+
+	args := flag.Args()
+
+	if len(args) < 1 {
+		log.Println("Error: No search word provided")
+		log.Println("Usage: endic [-e] WORD")
+		log.Println(" -e  : Use exact matching")
+		return
+	}
+
+	searchedCompound := strings.Join(args, " ")
+
 	app := App{}
 	repo, err := prepareData()
 	if err != nil {
@@ -60,14 +82,15 @@ func main() {
 	}
 	app.repo = repo
 
-	searchedWord := "ambidex"
-
-	// job
-	results, err := repo.FindWord(searchedWord)
+	results, err := repo.FindWord(searchedCompound, exactMatch)
 	if err != nil {
 		panic(err)
 	}
-	for _, result := range results {
-		log.Printf("%+v", result)
+
+	if len(results) == 0 {
+		printer.PrintEmpty()
+		return
 	}
+
+	printer.PrintResult(results)
 }

@@ -128,11 +128,7 @@ func (sr *SqliteRepository) UpdateData(entries []model.UpdateEntry) error {
 	return nil
 }
 
-func (sr *SqliteRepository) FindWordExact(val string) ([]model.UpdateEntry, error) {
-	return []model.UpdateEntry{}, nil
-}
-
-func (sr *SqliteRepository) FindWord(val string) ([]model.UpdateEntry, error) {
+func (sr *SqliteRepository) FindWord(val string, exact bool) ([]model.UpdateEntry, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -141,7 +137,11 @@ func (sr *SqliteRepository) FindWord(val string) ([]model.UpdateEntry, error) {
 	FROM dictionary
 	WHERE word MATCH ?`
 
-	rows, err := sr.DB.QueryContext(ctx, query, val+"*")
+	if !exact {
+		val = val + "*"
+	}
+
+	rows, err := sr.DB.QueryContext(ctx, query, val)
 	if err != nil {
 		return nil, err
 	}
