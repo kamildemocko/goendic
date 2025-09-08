@@ -1,11 +1,11 @@
 package main
 
 import (
+	"endic/internal/data"
+	"endic/internal/printer"
+	"endic/internal/repository"
+	"endic/internal/repository/sqlite"
 	"flag"
-	"goendic/internal/data"
-	"goendic/internal/printer"
-	"goendic/internal/repository"
-	"goendic/internal/repository/sqlite"
 	"io"
 	"log"
 	"strings"

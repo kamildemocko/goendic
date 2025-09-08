@@ -2,8 +2,8 @@ package repository
 
 import (
 	"database/sql"
-	"goendic/internal/data/model"
-	"goendic/internal/repository/sqlite"
+	"endic/internal/data/model"
+	"endic/internal/repository/sqlite"
 	"log"
 	"time"
 

@@ -3,8 +3,8 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"endic/internal/data/model"
 	"fmt"
-	"goendic/internal/data/model"
 	"log"
 	"os"
 	"path/filepath"

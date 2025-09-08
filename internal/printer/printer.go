@@ -1,8 +1,8 @@
 package printer
 
 import (
+	"endic/internal/data/model"
 	"fmt"
-	"goendic/internal/data/model"
 	"strings"
 	"unicode"
 
