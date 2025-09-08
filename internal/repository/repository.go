@@ -2,10 +2,11 @@ package repository
 
 import (
 	"database/sql"
-	"endic/internal/data/model"
-	"endic/internal/repository/sqlite"
 	"log"
 	"time"
+
+	"github.com/kamildemocko/goendic/internal/data/model"
+	"github.com/kamildemocko/goendic/internal/repository/sqlite"
 
 	_ "modernc.org/sqlite"
 )

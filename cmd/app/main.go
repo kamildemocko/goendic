@@ -1,14 +1,15 @@
 package main
 
 import (
-	"endic/internal/data"
-	"endic/internal/printer"
-	"endic/internal/repository"
-	"endic/internal/repository/sqlite"
 	"flag"
 	"io"
 	"log"
 	"strings"
+
+	"github.com/kamildemocko/goendic/internal/data"
+	"github.com/kamildemocko/goendic/internal/printer"
+	"github.com/kamildemocko/goendic/internal/repository"
+	"github.com/kamildemocko/goendic/internal/repository/sqlite"
 )
 
 const downloadUrl = `https://en-word.net/static/english-wordnet-2024.xml.gz`

@@ -3,12 +3,13 @@ package sqlite
 import (
 	"context"
 	"database/sql"
-	"endic/internal/data/model"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/kamildemocko/goendic/internal/data/model"
 )
 
 type SqliteRepository struct {

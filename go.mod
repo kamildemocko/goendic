@@ -1,4 +1,4 @@
-module endic
+module github.com/kamildemocko/goendic
 
 go 1.25.0
 

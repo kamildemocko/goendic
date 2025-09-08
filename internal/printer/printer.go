@@ -1,10 +1,11 @@
 package printer
 
 import (
-	"endic/internal/data/model"
 	"fmt"
 	"strings"
 	"unicode"
+
+	"github.com/kamildemocko/goendic/internal/data/model"
 
 	"github.com/fatih/color"
 )
