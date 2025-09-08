@@ -17,7 +17,11 @@ type SqliteRepository struct {
 
 // creates DB file and returns DSN
 func CreateDBFileIfNotExists() (string, error) {
-	dbDir := "data"
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return "", err
+	}
+	dbDir := filepath.Join(configDir, "goendic")
 
 	if err := os.MkdirAll(dbDir, 0755); err != nil {
 		return "", err
