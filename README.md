@@ -12,7 +12,7 @@ simple English cli dictionary, that uses `en-word.net` database of english words
 ## Installation
 
 ```bash
-go install github.com/kamildemocko/goendic@latest
+go install github.com/kamildemocko/goendic/cmd/endic@latest
 ```
 
 ## Usage
