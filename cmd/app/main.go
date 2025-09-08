@@ -6,13 +6,18 @@ import (
 	"goendic/internal/printer"
 	"goendic/internal/repository"
 	"goendic/internal/repository/sqlite"
+	"io"
 	"log"
 	"strings"
 )
 
 const downloadUrl = `https://en-word.net/static/english-wordnet-2024.xml.gz`
 
-var exactMatch bool
+var (
+	exactMatch bool
+	allResults bool
+	debugMode  bool
+)
 
 type App struct {
 	repo repository.Repository
@@ -59,17 +64,21 @@ func prepareData() (repository.Repository, error) {
 
 func init() {
 	flag.BoolVar(&exactMatch, "e", false, "use exact matching")
+	flag.BoolVar(&allResults, "l", false, "return all results")
+	flag.BoolVar(&debugMode, "d", false, "debug mode")
 }
 
 func main() {
 	flag.Parse()
 
+	if !debugMode {
+		log.SetOutput(io.Discard)
+	}
+
 	args := flag.Args()
 
 	if len(args) < 1 {
-		log.Println("Error: No search word provided")
-		log.Println("Usage: endic [-e] WORD")
-		log.Println(" -e  : Use exact matching")
+		printer.PrintUsage()
 		return
 	}
 
@@ -92,5 +101,5 @@ func main() {
 		return
 	}
 
-	printer.PrintResult(results)
+	printer.PrintResult(results, allResults)
 }

@@ -10,13 +10,33 @@ import (
 )
 
 func PrintEmpty() {
-	fmt.Println("No result found.")
+	printerRed := color.New(color.FgRed)
+	printerRed.Println("No result found.")
 }
 
-func PrintResult(values []model.UpdateEntry) {
+func PrintUsage() {
+	printerGray := color.New(color.FgHiBlack)
+
+	fmt.Println("Error: No search word provided")
+	fmt.Print("Usage: endic")
+	printerGray.Print(" [OPTIONS] ")
+	fmt.Println("WORD")
+	fmt.Println("Options: ")
+	printerGray.Println(" -e  : Use exact matching")
+	printerGray.Println(" -l  : Return all results")
+	printerGray.Println(" -d  : Debug mode")
+}
+
+func PrintResult(values []model.UpdateEntry, allResults bool) {
 	printerWord := color.New(color.FgHiMagenta).Add(color.Underline)
 	printerDef := color.New(color.FgHiYellow)
 	printerGray := color.New(color.FgHiBlack)
+
+	if len(values) > 10 && !allResults {
+		printerGray.Println("over 10 results, printing first 10...")
+		fmt.Println()
+		values = values[:9]
+	}
 
 	for _, value := range values {
 		wordR := []rune(value.Word)
