@@ -40,6 +40,11 @@ goendic -e happy
 goendic -l happy
 ```
 
+### Screenshot
+
+<img width="643" height="226" alt="image" src="https://github.com/user-attachments/assets/36a4f197-1d59-4361-8c73-ae5535e360e6" />
+
+
 ## How it works
 
 1. Downloads English dictionary data from en-word.net
