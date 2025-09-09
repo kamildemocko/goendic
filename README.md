@@ -25,7 +25,7 @@ endic [OPTIONS] WORD
 
 - `-e`: Use exact matching (default: prefix matching)
 - `-l`: Return all results (default: limited to 10)
-- `-d`: Debug mode
+- `-d`: Debug mode (hidden in usage)
 
 ### Examples
 

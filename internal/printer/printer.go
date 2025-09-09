@@ -1,6 +1,7 @@
 package printer
 
 import (
+	"flag"
 	"fmt"
 	"strings"
 	"unicode"
@@ -19,17 +20,18 @@ func PrintEmpty() {
 	printerRed.Println("No result found.")
 }
 
-func PrintUsage() {
+func SetupPrintUsage() {
 	printerGray := color.New(color.FgHiBlack)
 
-	fmt.Println("Error: No search word provided")
-	fmt.Print("Usage: endic")
-	printerGray.Print(" [OPTIONS] ")
-	fmt.Println("WORD")
-	fmt.Println("Options: ")
-	printerGray.Println(" -e  : Use exact matching")
-	printerGray.Println(" -l  : Return all results")
-	printerGray.Println(" -d  : Debug mode")
+	flag.Usage = func() {
+		fmt.Println("Error: No search word provided")
+		fmt.Print("Usage: endic")
+		printerGray.Print(" [OPTIONS] ")
+		fmt.Println("WORD")
+		fmt.Println("Options: ")
+		printerGray.Println(" -e  : Use exact matching")
+		printerGray.Println(" -l  : Return all results")
+	}
 }
 
 func PrintResult(values []model.UpdateEntry, allResults bool) {

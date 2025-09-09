@@ -72,6 +72,7 @@ func init() {
 }
 
 func main() {
+	printer.SetupPrintUsage()
 	flag.Parse()
 
 	if !debugMode {
@@ -81,7 +82,7 @@ func main() {
 	args := flag.Args()
 
 	if len(args) < 1 {
-		printer.PrintUsage()
+		flag.Usage()
 		return
 	}
 
