@@ -10,6 +10,10 @@ import (
 	"github.com/fatih/color"
 )
 
+func PrintFirstTimeDB() {
+	fmt.Println("Preparing DB...")
+}
+
 func PrintEmpty() {
 	printerRed := color.New(color.FgRed)
 	printerRed.Println("No result found.")

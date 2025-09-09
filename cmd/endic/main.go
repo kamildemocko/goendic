@@ -43,6 +43,8 @@ func prepareData() (repository.Repository, error) {
 		return repo, nil
 	}
 
+	printer.PrintFirstTimeDB()
+
 	loader := data.NewDataLoader(downloadUrl)
 	file, err := loader.Get()
 	if err != nil {
