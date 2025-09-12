@@ -8,8 +8,15 @@ import (
 
 var logFile *os.File
 
-func InitLogger(path string) error {
-	logDir := filepath.Dir(path)
+func InitLogger() error {
+	var err error
+
+	configDir, err := os.UserConfigDir()
+	if err != nil {
+		return err
+	}
+
+	logDir := filepath.Join(configDir, "goendic")
 	_, notfound := os.Stat(logDir)
 	if notfound != nil {
 		if err := os.MkdirAll(logDir, 0755); err != nil {
@@ -17,8 +24,8 @@ func InitLogger(path string) error {
 		}
 	}
 
-	var err error
-	logFile, err = os.OpenFile(path, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	logPath := filepath.Join(logDir, "words.log")
+	logFile, err = os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		return err
 	}

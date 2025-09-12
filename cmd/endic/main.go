@@ -14,10 +14,7 @@ import (
 	"github.com/kamildemocko/goendic/internal/repository/sqlite"
 )
 
-const (
-	downloadUrl         = `https://en-word.net/static/english-wordnet-2024.xml.gz`
-	searchedWordLogPath = `logs\words.log`
-)
+const downloadUrl = `https://en-word.net/static/english-wordnet-2024.xml.gz`
 
 var (
 	exactMatch bool
@@ -71,7 +68,7 @@ func prepareData() (repository.Repository, error) {
 }
 
 func init() {
-	err := logs.InitLogger(searchedWordLogPath)
+	err := logs.InitLogger()
 	if err != nil {
 		panic(err)
 	}
