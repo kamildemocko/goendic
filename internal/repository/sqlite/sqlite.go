@@ -138,26 +138,37 @@ func (sr *SqliteRepository) FindWord(val string, exact bool) ([]model.UpdateEntr
 	defer cancel()
 
 	var query string
+	var rows *sql.Rows
+	var err error
 
 	if exact {
 		query = `
 		SELECT word, pos, definition, examples
         FROM dictionary
         WHERE word MATCH ?`
+
+		rows, err = sr.DB.QueryContext(ctx, query, val)
+
 	} else {
-		val = val + "*"
+		searchVal := val + "*"
 		query = `
 		SELECT word, pos, definition, examples
-		FROM (
-			SELECT word, pos, definition, examples , bm25(dictionary) AS rank
-			FROM dictionary
-			WHERE word MATCH ?
-			ORDER BY length(word) ASC, rank ASC, word ASC
-		)
-		LIMIT 100`
+        FROM (
+            SELECT word, pos, definition, examples, bm25(dictionary) AS rank,
+               CASE WHEN lower(word) = lower(?) THEN 1
+                    WHEN lower(word) = lower(?) || 's' THEN 2
+                    WHEN lower(word) LIKE lower(?) || ' %' THEN 3
+                    ELSE 4
+               END AS exactMatch
+            FROM dictionary
+            WHERE word MATCH ?
+            ORDER BY exactMatch ASC, length(word) ASC, rank ASC, word ASC
+        )
+        LIMIT 100`
+
+		rows, err = sr.DB.QueryContext(ctx, query, val, val, val, searchVal)
 	}
 
-	rows, err := sr.DB.QueryContext(ctx, query, val)
 	if err != nil {
 		return nil, err
 	}
