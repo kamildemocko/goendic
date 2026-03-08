@@ -15,6 +15,20 @@ func PrintFirstTimeDB() {
 	fmt.Println("Preparing DB...")
 }
 
+func PrintUpdateDB() {
+	fmt.Println("Updating DB...")
+}
+
+func PrintDbUpdated() {
+	fmt.Println("DB was updated")
+}
+
+func PrintOldDB() {
+	printerGray := color.New(color.FgHiBlack)
+	printerGray.Println("Consider updating DB with the -u flag")
+	fmt.Println()
+}
+
 func PrintEmpty() {
 	printerRed := color.New(color.FgRed)
 	printerRed.Println("No result found.")
@@ -31,6 +45,7 @@ func SetupPrintUsage() {
 		fmt.Println("Options: ")
 		printerGray.Println(" -e  : Use exact matching")
 		printerGray.Println(" -l  : Return all results")
+		printerGray.Println(" -u  : Update database")
 	}
 }
 

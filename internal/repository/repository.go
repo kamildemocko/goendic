@@ -15,6 +15,8 @@ type Repository interface {
 	CreateTable() error
 	HasData() (bool, error)
 	UpdateData([]model.UpdateEntry) error
+	UpdateUrl(string) error
+	GetUrl() (string, error)
 	FindWord(val string, exact bool) ([]model.UpdateEntry, error)
 }
 

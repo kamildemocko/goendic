@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"log/slog"
+	"os"
 	"strings"
 
 	"github.com/kamildemocko/goendic/internal/bootstrap"
@@ -13,11 +14,13 @@ import (
 	"github.com/kamildemocko/goendic/internal/repository"
 )
 
-const downloadUrl = `https://en-word.net/static/english-wordnet-2024.xml.gz`
+// TODO: dynamic URL
+// TODO: check if new DB available, show a suggest with a new flag to update it
 
 var (
 	exactMatch bool
 	allResults bool
+	updateDb   bool
 	debugMode  bool
 )
 
@@ -33,6 +36,7 @@ func init() {
 
 	flag.BoolVar(&exactMatch, "e", false, "use exact matching")
 	flag.BoolVar(&allResults, "l", false, "return all results")
+	flag.BoolVar(&updateDb, "u", false, "update database")
 	flag.BoolVar(&debugMode, "d", false, "debug mode")
 }
 
@@ -45,18 +49,28 @@ func main() {
 		log.SetOutput(io.Discard)
 	}
 
-	args := flag.Args()
+	repo, err := bootstrap.OpenRepo()
+	if err != nil {
+		panic(err)
+	}
 
-	if len(args) < 1 {
+	if updateDb {
+		bootstrap.ForceUpdateDB(repo)
+		os.Exit(0)
+	}
+
+	word_args := flag.Args()
+	if len(word_args) < 1 {
 		flag.Usage()
 		return
 	}
 
-	searchedCompound := strings.Join(args, " ")
+	searchedCompound := strings.Join(word_args, " ")
 	slog.Info(searchedCompound)
 
 	app := App{}
-	repo, err := bootstrap.PrepareData(downloadUrl)
+
+	err = bootstrap.PrepareData(repo)
 	if err != nil {
 		panic(err)
 	}

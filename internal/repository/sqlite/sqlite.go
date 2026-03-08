@@ -3,6 +3,7 @@ package sqlite
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -49,6 +50,16 @@ func (sr *SqliteRepository) CreateTable() error {
 	);`
 
 	_, err := sr.DB.ExecContext(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	query_url := `
+	CREATE TABLE IF NOT EXISTS url (
+		value TEXT NOT NULL
+	);`
+
+	_, err = sr.DB.ExecContext(ctx, query_url)
 	if err != nil {
 		return err
 	}
@@ -131,6 +142,61 @@ func (sr *SqliteRepository) UpdateData(entries []model.UpdateEntry) error {
 	log.Println("success")
 
 	return nil
+}
+
+func (sr *SqliteRepository) UpdateUrl(url string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	log.Println("updating url")
+
+	tx, err := sr.DB.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	query_truncate := `
+	DELETE FROM url`
+
+	_, err = tx.ExecContext(ctx, query_truncate)
+	if err != nil {
+		return err
+	}
+
+	query := `
+	INSERT INTO url (value)
+	VALUES (?);`
+
+	_, err = tx.ExecContext(ctx, query, url)
+	if err != nil {
+		return err
+	}
+
+	if err = tx.Commit(); err != nil {
+		return err
+	}
+
+	log.Println("success")
+	return nil
+}
+
+func (sr *SqliteRepository) GetUrl() (string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	query := `SELECT value FROM url`
+
+	var value string
+	err := sr.DB.QueryRowContext(ctx, query).Scan(&value)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return "", nil
+		}
+		return "", err
+	}
+
+	return value, nil
 }
 
 func (sr *SqliteRepository) FindWord(val string, exact bool) ([]model.UpdateEntry, error) {
