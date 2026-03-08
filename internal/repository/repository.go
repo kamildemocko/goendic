@@ -18,7 +18,7 @@ type Repository interface {
 	FindWord(val string, exact bool) ([]model.UpdateEntry, error)
 }
 
-func NewSqliteDB(db *sql.DB) Repository {
+func newSqliteDB(db *sql.DB) Repository {
 	return &sqlite.SqliteRepository{
 		DB: db,
 	}
@@ -38,7 +38,7 @@ func InitSqliteDB(dsn string) (Repository, error) {
 
 	db.SetConnMaxLifetime(5 * time.Minute)
 
-	repo := NewSqliteDB(db)
+	repo := newSqliteDB(db)
 	err = repo.CreateTable()
 	if err != nil {
 		return nil, err
