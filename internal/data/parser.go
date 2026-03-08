@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/kamildemocko/goendic/internal/data/model"
+	"github.com/kamildemocko/goendic/v2/internal/data/model"
 )
 
 type LexicalResource struct {

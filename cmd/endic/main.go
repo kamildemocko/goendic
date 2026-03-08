@@ -8,10 +8,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kamildemocko/goendic/internal/bootstrap"
-	"github.com/kamildemocko/goendic/internal/logs"
-	"github.com/kamildemocko/goendic/internal/printer"
-	"github.com/kamildemocko/goendic/internal/repository"
+	"github.com/kamildemocko/goendic/v2/internal/bootstrap"
+	"github.com/kamildemocko/goendic/v2/internal/logs"
+	"github.com/kamildemocko/goendic/v2/internal/printer"
+	"github.com/kamildemocko/goendic/v2/internal/repository"
 )
 
 // TODO: dynamic URL

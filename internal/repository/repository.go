@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/kamildemocko/goendic/internal/data/model"
-	"github.com/kamildemocko/goendic/internal/repository/sqlite"
+	"github.com/kamildemocko/goendic/v2/internal/data/model"
+	"github.com/kamildemocko/goendic/v2/internal/repository/sqlite"
 
 	_ "modernc.org/sqlite"
 )

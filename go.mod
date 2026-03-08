@@ -1,4 +1,4 @@
-module github.com/kamildemocko/goendic
+module github.com/kamildemocko/goendic/v2
 
 go 1.25.0
 
