@@ -49,6 +49,12 @@ func SetupPrintUsage() {
 	}
 }
 
+func PrintOfflineState() {
+	printerWord := color.New(color.FgHiMagenta).Add(color.Underline)
+
+	printerWord.Println("Please connect to network to create or update database")
+}
+
 func PrintResult(values []model.UpdateEntry, allResults bool) {
 	printerWord := color.New(color.FgHiMagenta).Add(color.Underline)
 	printerDef := color.New(color.FgHiYellow)

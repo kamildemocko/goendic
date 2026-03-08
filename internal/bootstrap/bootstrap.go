@@ -1,6 +1,8 @@
 package bootstrap
 
 import (
+	"log"
+
 	"github.com/kamildemocko/goendic/internal/data"
 	"github.com/kamildemocko/goendic/internal/printer"
 	"github.com/kamildemocko/goendic/internal/repository"
@@ -8,6 +10,8 @@ import (
 )
 
 func OpenRepo() (repository.Repository, error) {
+	log.Println("opening repository")
+
 	dsn, err := sqlite.CreateDBFileIfNotExists()
 	if err != nil {
 		return nil, err
@@ -22,17 +26,30 @@ func OpenRepo() (repository.Repository, error) {
 }
 
 func PrepareData(repo repository.Repository) error {
-	dbExists, err := repo.HasData()
+	log.Println("preparing data")
+
+	dbHasData, err := repo.HasData()
 	if err != nil {
 		return err
+	}
+
+	if data.IsOffline() {
+		log.Println("device is offline")
+		if !dbHasData {
+			printer.PrintOfflineState()
+		}
+		return nil
 	}
 
 	mostRecentUrl, err := data.FindMostRecentUrl()
 	if err != nil {
+		if !dbHasData {
+		}
 		return err
 	}
 
-	if !dbExists {
+	if !dbHasData {
+		log.Println("first time update")
 		printer.PrintFirstTimeDB()
 		return updateDB(repo, mostRecentUrl)
 	}
@@ -76,6 +93,14 @@ func updateDB(repo repository.Repository, downloadUrl string) error {
 }
 
 func ForceUpdateDB(repo repository.Repository) error {
+	log.Println("force updating database")
+
+	if data.IsOffline() {
+		log.Println("device is offline")
+		printer.PrintOfflineState()
+		return nil
+	}
+
 	printer.PrintUpdateDB()
 
 	mostRecentUrl, err := data.FindMostRecentUrl()

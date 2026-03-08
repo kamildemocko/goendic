@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type DataLoader struct {
@@ -116,4 +118,14 @@ func (d *DataLoader) Get() (string, error) {
 
 func (d *DataLoader) Close() {
 	d.cleanTempDir()
+}
+
+func IsOffline() bool {
+	conn, err := net.DialTimeout("tcp", "1.1.1.1", 1500*time.Millisecond)
+	if err != nil {
+		return true
+	}
+	conn.Close()
+
+	return false
 }
