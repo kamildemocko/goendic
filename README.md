@@ -7,6 +7,7 @@ simple English cli dictionary, that uses `en-word.net` database of english words
 - Fast English word lookup
 - Supports both exact matching and prefix matching
 - Displays definitions and example usage
+- Checks if new DB is available
 - Offline access after initial download
 
 ## Installation
@@ -25,6 +26,7 @@ endic [OPTIONS] WORD
 
 - `-e`: Use exact matching (default: prefix matching)
 - `-l`: Return all results (default: limited to 10)
+- `-u`: Force to update database
 - `-d`: Debug mode (hidden in usage)
 
 ### Examples
