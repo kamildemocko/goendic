@@ -53,6 +53,16 @@ goendic -l happy
 2. Stores data in a local SQLite database with FTS5 for fast text search
 3. Provides command-line interface for word lookups
 
+## Pre-Commit Hook for Versioning
+
+To automatically update the version file before each commit, add the following line to your `.git/hooks/pre-commit` script:
+
+```bash
+echo "$(git describe --tags --abbrev=0)" > ./cmd/endic/version.txt
+```
+
+After your initial commit, create a new tag for the version and commit again to update the version file.
+
 ## License
 
 [MIT](LICENSE)
