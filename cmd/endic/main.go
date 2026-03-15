@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"flag"
 	"io"
 	"log"
@@ -14,14 +15,14 @@ import (
 	"github.com/kamildemocko/goendic/v2/internal/repository"
 )
 
-// TODO: dynamic URL
-// TODO: check if new DB available, show a suggest with a new flag to update it
-
 var (
-	exactMatch bool
-	allResults bool
-	updateDb   bool
-	debugMode  bool
+	exactMatch  bool
+	allResults  bool
+	updateDb    bool
+	debugMode   bool
+	showVersion bool
+	//go:embed version.txt
+	versionFile embed.FS
 )
 
 type App struct {
@@ -38,12 +39,26 @@ func init() {
 	flag.BoolVar(&allResults, "l", false, "return all results")
 	flag.BoolVar(&updateDb, "u", false, "update database")
 	flag.BoolVar(&debugMode, "d", false, "debug mode")
+	flag.BoolVar(&showVersion, "v", false, "show version")
+}
+
+func readVersion() string {
+	data, err := versionFile.ReadFile("version.txt")
+	if err != nil {
+		return "dev"
+	}
+	return strings.TrimSpace(string(data))
 }
 
 func main() {
 	defer logs.CloseLogger()
 	printer.SetupPrintUsage()
 	flag.Parse()
+
+	if showVersion {
+		printer.PrintVersion(readVersion())
+		os.Exit(0)
+	}
 
 	if !debugMode {
 		log.SetOutput(io.Discard)

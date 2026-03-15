@@ -46,7 +46,12 @@ func SetupPrintUsage() {
 		printerGray.Println(" -e  : Use exact matching")
 		printerGray.Println(" -l  : Return all results")
 		printerGray.Println(" -u  : Update database")
+		printerGray.Println(" -v  : Show version")
 	}
+}
+
+func PrintVersion(version string) {
+	fmt.Println(version)
 }
 
 func PrintOfflineState() {
