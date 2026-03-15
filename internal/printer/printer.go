@@ -1,7 +1,6 @@
 package printer
 
 import (
-	"embed"
 	"flag"
 	"fmt"
 	"strings"
@@ -51,7 +50,7 @@ func SetupPrintUsage() {
 	}
 }
 
-func PrintVersion(version embed.FS) {
+func PrintVersion(version string) {
 	fmt.Println(version)
 }
 

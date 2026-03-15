@@ -56,7 +56,7 @@ func main() {
 	flag.Parse()
 
 	if showVersion {
-		printer.PrintVersion(versionFile)
+		printer.PrintVersion(readVersion())
 		os.Exit(0)
 	}
 
