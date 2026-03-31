@@ -121,7 +121,7 @@ func (d *DataLoader) Close() {
 }
 
 func IsOffline() bool {
-	conn, err := net.DialTimeout("tcp", "1.1.1.1", 1500*time.Millisecond)
+	conn, err := net.DialTimeout("tcp", "1.1.1.1:443", 1500*time.Millisecond)
 	if err != nil {
 		return true
 	}
