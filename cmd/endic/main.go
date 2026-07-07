@@ -9,10 +9,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/kamildemocko/goendic/v2/internal/bootstrap"
-	"github.com/kamildemocko/goendic/v2/internal/logs"
-	"github.com/kamildemocko/goendic/v2/internal/printer"
-	"github.com/kamildemocko/goendic/v2/internal/repository"
+	"github.com/kamildemocko/goendic/v3/internal/bootstrap"
+	"github.com/kamildemocko/goendic/v3/internal/logs"
+	"github.com/kamildemocko/goendic/v3/internal/printer"
+	"github.com/kamildemocko/goendic/v3/internal/repository"
 )
 
 var (

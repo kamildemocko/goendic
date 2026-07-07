@@ -3,10 +3,10 @@ package bootstrap
 import (
 	"log"
 
-	"github.com/kamildemocko/goendic/v2/internal/data"
-	"github.com/kamildemocko/goendic/v2/internal/printer"
-	"github.com/kamildemocko/goendic/v2/internal/repository"
-	"github.com/kamildemocko/goendic/v2/internal/repository/sqlite"
+	"github.com/kamildemocko/goendic/v3/internal/data"
+	"github.com/kamildemocko/goendic/v3/internal/printer"
+	"github.com/kamildemocko/goendic/v3/internal/repository"
+	"github.com/kamildemocko/goendic/v3/internal/repository/sqlite"
 )
 
 func OpenRepo() (repository.Repository, error) {
