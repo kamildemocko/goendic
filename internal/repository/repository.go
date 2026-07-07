@@ -18,6 +18,9 @@ type Repository interface {
 	UpdateUrl(string) error
 	GetUrl() (string, error)
 	FindWord(val string, exact bool) ([]model.UpdateEntry, error)
+	GetSchemaVersion() (int, error)
+	SetSchemaVersion(int) error
+	DropTables() error
 }
 
 func newSqliteDB(db *sql.DB) Repository {
