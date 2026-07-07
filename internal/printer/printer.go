@@ -60,6 +60,11 @@ func PrintOfflineState() {
 	printerWord.Println("Please connect to network to create or update database")
 }
 
+func PrintMigration() {
+	printerYellow := color.New(color.FgYellow)
+	printerYellow.Println("Migrating database to new schema...")
+}
+
 func PrintResult(values []model.UpdateEntry, allResults bool) {
 	printerWord := color.New(color.FgHiMagenta).Add(color.Underline)
 	printerDef := color.New(color.FgHiYellow)

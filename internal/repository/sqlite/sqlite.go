@@ -15,6 +15,8 @@ import (
 	"github.com/kamildemocko/goendic/v2/internal/data/model"
 )
 
+const CurrentSchemaVersion = 2
+
 type SqliteRepository struct {
 	DB *sql.DB
 }
@@ -115,6 +117,29 @@ func (sr *SqliteRepository) CreateTable() error {
 	_, err = sr.DB.ExecContext(ctx, query_url)
 	if err != nil {
 		return err
+	}
+
+	query_schema_version := `
+	CREATE TABLE IF NOT EXISTS schema_version (
+		version INTEGER NOT NULL
+	);`
+
+	_, err = sr.DB.ExecContext(ctx, query_schema_version)
+	if err != nil {
+		return err
+	}
+
+	var count int
+	err = sr.DB.QueryRowContext(ctx, "SELECT COUNT(*) FROM schema_version").Scan(&count)
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		_, err = sr.DB.ExecContext(ctx, "INSERT INTO schema_version (version) VALUES (?)", CurrentSchemaVersion)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -403,4 +428,82 @@ func (sr *SqliteRepository) FindWord(val string, exact bool) ([]model.UpdateEntr
 		// Fall back to fuzzy search with Levenshtein distance
 		return sr.fuzzySearch(ctx, val, seen)
 	}
+}
+
+func (sr *SqliteRepository) GetSchemaVersion() (int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	query := `
+	SELECT name FROM sqlite_master
+	WHERE type='table' AND name='schema_version'`
+
+	var tableName string
+	err := sr.DB.QueryRowContext(ctx, query).Scan(&tableName)
+	if err == sql.ErrNoRows {
+		return 0, nil
+	}
+	if err != nil {
+		return 0, err
+	}
+
+	var version int
+	err = sr.DB.QueryRowContext(ctx, "SELECT version FROM schema_version LIMIT 1").Scan(&version)
+	if err == sql.ErrNoRows {
+		return 0, nil
+	}
+	if err != nil {
+		return 0, err
+	}
+
+	return version, nil
+}
+
+func (sr *SqliteRepository) SetSchemaVersion(int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_, err := sr.DB.ExecContext(ctx, "DELETE FROM schema_version")
+	if err != nil {
+		return err
+	}
+
+	query := `
+	INSERT into scheme_version
+	(version) VALUES (?)`
+
+	_, err = sr.DB.ExecContext(ctx, query, CurrentSchemaVersion)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sr *SqliteRepository) DropTables() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	log.Println("dropping tables")
+
+	tables := []string{"url", "schema_version", "dictionary"}
+
+	for _, table := range tables {
+		query := fmt.Sprintf("DROP TABLE IF EXISTS %s", table)
+		_, err := sr.DB.ExecContext(ctx, query)
+		if err != nil {
+			return err
+		}
+	}
+
+	indexes := []string{"idx_dictionary_word", "idx_dictionary_word_lower"}
+	for _, index := range indexes {
+		query := fmt.Sprintf("DROP INDEX IF EXISTS %s", index)
+		_, err := sr.DB.ExecContext(ctx, query)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -22,6 +22,30 @@ func OpenRepo() (repository.Repository, error) {
 		return nil, err
 	}
 
+	version, err := repo.GetSchemaVersion()
+	if err != nil {
+		return nil, err
+	}
+
+	if version < sqlite.CurrentSchemaVersion {
+		printer.PrintMigration()
+
+		err = repo.DropTables()
+		if err != nil {
+			return nil, err
+		}
+
+		err = repo.CreateTable()
+		if err != nil {
+			return nil, err
+		}
+
+		err = ForceUpdateDB(repo)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return repo, nil
 }
 

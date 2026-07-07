@@ -50,7 +50,7 @@ goendic -l happy
 ## How it works
 
 1. Downloads English dictionary data from en-word.net
-2. Stores data in a local SQLite database with FTS5 for fast text search
+2. Stores data in a local SQLite database with fuzzySearch for fast text search
 3. Provides command-line interface for word lookups
 
 ## License
