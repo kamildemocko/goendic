@@ -93,17 +93,17 @@ func (sr *SqliteRepository) CreateTable() error {
 	defer cancel()
 
 	log.Println("database init")
-	query_dictionary_exists := `
-	SELECT * FROM sqlite_schema
+
+	queryDictionaryExists := `
+	SELECT COUNT(*) FROM sqlite_schema
 	WHERE type = 'table'
 	and name = 'dictionary'
 	`
 
-	var dictTableExists = true
-	err := sr.DB.QueryRowContext(ctx, query_dictionary_exists).Scan()
-	if err == sql.ErrNoRows {
-		dictTableExists = false
-
+	var dictTableExists bool
+	err := sr.DB.QueryRowContext(ctx, queryDictionaryExists).Scan(&dictTableExists)
+	if err != nil {
+		return err
 	}
 
 	query := `
