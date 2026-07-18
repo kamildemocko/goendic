@@ -93,6 +93,18 @@ func (sr *SqliteRepository) CreateTable() error {
 	defer cancel()
 
 	log.Println("database init")
+	query_dictionary_exists := `
+	SELECT * FROM sqlite_schema
+	WHERE type = 'table'
+	and name = 'dictionary'
+	`
+
+	var dictTableExists = true
+	err := sr.DB.QueryRowContext(ctx, query_dictionary_exists).Scan()
+	if err == sql.ErrNoRows {
+		dictTableExists = false
+
+	}
 
 	query := `
 	CREATE TABLE IF NOT EXISTS dictionary (
@@ -104,7 +116,7 @@ func (sr *SqliteRepository) CreateTable() error {
 	CREATE INDEX IF NOT EXISTS idx_dictionary_word ON dictionary(word);
 	CREATE INDEX IF NOT EXISTS idx_dictionary_word_lower ON dictionary(lower(word));`
 
-	_, err := sr.DB.ExecContext(ctx, query)
+	_, err = sr.DB.ExecContext(ctx, query)
 	if err != nil {
 		return err
 	}
@@ -136,7 +148,15 @@ func (sr *SqliteRepository) CreateTable() error {
 	}
 
 	if count == 0 {
-		_, err = sr.DB.ExecContext(ctx, "INSERT INTO schema_version (version) VALUES (?)", CurrentSchemaVersion)
+		var schemaVersion = CurrentSchemaVersion
+
+		if dictTableExists {
+			// migration from < v3, dict table exists
+			log.Println("detected wrong table version")
+			schemaVersion = -1
+		}
+
+		_, err = sr.DB.ExecContext(ctx, "INSERT INTO schema_version (version) VALUES (?)", schemaVersion)
 		if err != nil {
 			return err
 		}
