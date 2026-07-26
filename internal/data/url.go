@@ -28,5 +28,5 @@ func FindMostRecentUrl() (string, error) {
 		return currentUrl, nil
 	}
 
-	return "", fmt.Errorf("could not find any version of database")
+	return "", fmt.Errorf("could not find any version of database or en-word.net is down")
 }

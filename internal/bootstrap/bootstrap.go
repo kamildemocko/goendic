@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/kamildemocko/goendic/v3/internal/data"
@@ -68,8 +69,12 @@ func PrepareData(repo repository.Repository) error {
 	mostRecentUrl, err := data.FindMostRecentUrl()
 	if err != nil {
 		if !dbHasData {
+			print(err)
 		}
-		return err
+
+		// Page might be down, print warning
+		fmt.Println("en-word.net might be down, cannot check for update")
+		return nil
 	}
 
 	if !dbHasData {
